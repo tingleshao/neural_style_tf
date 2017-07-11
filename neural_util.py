@@ -123,14 +123,14 @@ def gramian(layer):
     # the entire gramian in a single matrix multiplication.
     _, height, width, number = map(lambda i: i.value, layer.get_shape())
     size = height * width * number
-    layer_unpacked = tf.unpack(layer)
+    layer_unpacked = tf.unstack(layer)
     grams = []
     for single_layer in layer_unpacked:
         feats = tf.reshape(single_layer, (-1, number))
         # Note: the normalization factor might be wrong. I've seen many different forms of normalization. The current
         # one works though.
         grams.append(tf.matmul(tf.transpose(feats), feats) / size)
-    return tf.pack(grams)
+    return tf.stack(grams)
 
 
 def total_variation(image_batch):

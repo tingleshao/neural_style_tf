@@ -30,6 +30,7 @@ class NeuralDoodleUtilTest(tf.test.TestCase):
             expected_output = np.array([[[[sum([i ** 2 for i in range(1, 6)]) / init_mask_mean[0], 1 / init_mask_mean[0]], [1 / init_mask_mean[0], 1 / init_mask_mean[0]]]],
                                         [[[6**2 / init_mask_mean[1], 0 / init_mask_mean[1]], [0 / init_mask_mean[1], 0 / init_mask_mean[1]]]]]) / size
             actual_output = masked_gramian.eval(feeddict)
+            print(actual_output.shape)
             np.testing.assert_almost_equal(actual_output, expected_output, decimal=4)
 
 

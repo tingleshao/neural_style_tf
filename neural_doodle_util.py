@@ -31,7 +31,7 @@ def vgg_layer_dot_mask(masks, vgg_layer):
     """
     masks_dim_expanded = tf.expand_dims(masks, 4)
     vgg_layer_dim_expanded = tf.expand_dims(vgg_layer, 3)
-    dot = tf.mul(masks_dim_expanded, vgg_layer_dim_expanded)
+    dot = tf.multiply(masks_dim_expanded, vgg_layer_dim_expanded)
 
     batch_size, height, width, num_mask, num_features = map(lambda i: i.value, dot.get_shape())
     dot = tf.reshape(dot, [batch_size, height, width, num_mask * num_features])
@@ -85,7 +85,7 @@ def gramian_with_mask(layer, masks):
     :param masks: mask with shape (num_batch, height, width, num_masks)
     :return: a tensor with dimension gramians of dimension (num_masks, num_batch, num_features, num_features)
     """
-    mask_list = tf.unpack(masks, axis=3) # A list of masks with dimension (1,height, width)
+    mask_list = tf.unstack(masks, axis=3) # A list of masks with dimension (1,height, width)
 
     gram_list = []
 
@@ -97,7 +97,7 @@ def gramian_with_mask(layer, masks):
         # with different masks applied to them.
         layer_dotted_with_mask_gram_normalized = layer_dotted_with_mask_gram / (tf.reduce_mean(mask) + 0.000001) # Avoid division by zero.
         gram_list.append(layer_dotted_with_mask_gram_normalized)
-    grams = tf.pack(gram_list)
+    grams = tf.stack(gram_list)
 
     if isinstance(layer, np.ndarray):
         _, _, _, num_features = layer.shape
